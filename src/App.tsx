@@ -1,6 +1,6 @@
 // src/App.tsx
 import React, { useState } from "react";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, Paper } from "@mui/material";
 import TaskInput from "./TaskInput";
 import TaskList from "./TaskList";
 
@@ -36,11 +36,17 @@ const App: React.FC = () => {
 
   return (
     <Container maxWidth="sm" style={{ marginTop: "2rem", textAlign: "center" }}>
-      <Typography variant="h4" gutterBottom>
-        Task List
-      </Typography>
-      <TaskInput onAddTask={addTask} />
-      <TaskList tasks={tasks} onToggleComplete={toggleTaskCompletion} onDeleteTask={deleteTask} />
+      <Paper elevation={3} style={{ padding: "2rem" }}>
+        <Typography variant="h4" gutterBottom>
+          Task List
+        </Typography>
+        <TaskInput onAddTask={addTask} />
+        <TaskList
+          tasks={tasks}
+          onToggleComplete={toggleTaskCompletion}
+          onDeleteTask={deleteTask}
+        />
+      </Paper>
     </Container>
   );
 };

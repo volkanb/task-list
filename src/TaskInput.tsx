@@ -17,15 +17,16 @@ const TaskInput: React.FC<TaskInputProps> = ({ onAddTask }) => {
   };
 
   return (
-    <Box display="flex" gap={2} marginY={2}>
+    <Box display="flex" gap={2} alignItems="center" marginBottom={3}>
       <TextField
         variant="outlined"
-        label="New Task"
+        label="Add a new task"
         value={task}
         onChange={(e) => setTask(e.target.value)}
         fullWidth
+        size="small"
       />
-      <Button variant="contained" color="primary" onClick={handleAddTask}>
+      <Button variant="contained" color="primary" onClick={handleAddTask} size="large">
         Add
       </Button>
     </Box>
