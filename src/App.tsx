@@ -1,5 +1,4 @@
-// src/App.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Typography, Paper, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import TaskInput from "./TaskInput";
 import TaskList from "./TaskList";
@@ -13,6 +12,29 @@ interface Task {
 const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+
+  // Load tasks from localStorage only once when the component mounts
+  useEffect(() => {
+    const savedTasks = localStorage.getItem("tasks");
+    console.log(savedTasks);
+    if (savedTasks) {
+      try {
+        const parsedTasks = JSON.parse(savedTasks);
+        if (Array.isArray(parsedTasks)) {
+          setTasks(parsedTasks);
+        }
+      } catch (error) {
+        console.error("Error parsing tasks from localStorage:", error);
+      }
+    }
+  }, []);
+
+  // Save tasks to localStorage whenever `tasks` changes
+  useEffect(() => {
+    if (tasks.length > 0) {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+  }, [tasks]);
 
   const addTask = (taskText: string) => {
     const newTask: Task = {
