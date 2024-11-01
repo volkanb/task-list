@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Container, Typography, Paper, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Container, Typography, Paper, ToggleButton, ToggleButtonGroup, Button, Snackbar, Alert } from "@mui/material";
 import TaskInput from "./TaskInput";
 import TaskList from "./TaskList";
 
@@ -12,6 +12,8 @@ interface Task {
 const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     const savedTasks = localStorage.getItem("tasks");
@@ -40,6 +42,7 @@ const App: React.FC = () => {
       completed: false,
     };
     setTasks([...tasks, newTask]);
+    showSnackbar("Task added successfully!");
   };
 
   const toggleTaskCompletion = (id: number) => {
@@ -48,10 +51,12 @@ const App: React.FC = () => {
         task.id === id ? { ...task, completed: !task.completed } : task
       )
     );
+    showSnackbar("Task completion toggled!");
   };
 
   const deleteTask = (id: number) => {
     setTasks(tasks.filter((task) => task.id !== id));
+    showSnackbar("Task deleted!");
   };
 
   const handleEditTask = (id: number, newText: string) => {
@@ -60,10 +65,12 @@ const App: React.FC = () => {
         task.id === id ? { ...task, text: newText } : task
       )
     );
+    showSnackbar("Task updated!");
   };
 
   const handleClearCompleted = () => {
     setTasks(tasks.filter((task) => !task.completed));
+    showSnackbar("Completed tasks cleared!");
   };
 
   const handleFilterChange = (
@@ -80,6 +87,15 @@ const App: React.FC = () => {
     if (filter === "active") return !task.completed;
     return true;
   });
+
+  const showSnackbar = (message: string) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   return (
     <Container maxWidth="sm" style={{ marginTop: "2rem", textAlign: "center" }}>
@@ -108,6 +124,13 @@ const App: React.FC = () => {
           onEditTask={handleEditTask}
         />
       </Paper>
+
+      {/* Snackbar for notifications */}
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: "100%" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
