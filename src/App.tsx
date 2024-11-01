@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Paper, ToggleButton, ToggleButtonGroup, Button, Snackbar, Alert } from "@mui/material";
+import { Container, Typography, Paper, ToggleButton, ToggleButtonGroup, Button, Snackbar, Alert, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import TaskInput from "./TaskInput";
 import TaskList from "./TaskList";
 
@@ -12,6 +12,7 @@ interface Task {
 const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [sortBy, setSortBy] = useState<"text" | "completed">("text");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -82,7 +83,15 @@ const App: React.FC = () => {
     }
   };
 
-  const filteredTasks = tasks.filter((task) => {
+  const sortedTasks = [...tasks].sort((a, b) => {
+    if (sortBy === "text") {
+      return a.text.localeCompare(b.text);
+    } else {
+      return Number(a.completed) - Number(b.completed); // completed is boolean, convert to number
+    }
+  });
+
+  const filteredTasks = sortedTasks.filter((task) => {
     if (filter === "completed") return task.completed;
     if (filter === "active") return !task.completed;
     return true;
@@ -114,6 +123,20 @@ const App: React.FC = () => {
           <ToggleButton value="active">Active</ToggleButton>
           <ToggleButton value="completed">Completed</ToggleButton>
         </ToggleButtonGroup>
+
+        {/* Sort By Dropdown */}
+        <FormControl variant="outlined" style={{ minWidth: 120, marginBottom: "16px" }}>
+          <InputLabel>Sort By</InputLabel>
+          <Select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as "text" | "completed")}
+            label="Sort By"
+          >
+            <MenuItem value="text">Text</MenuItem>
+            <MenuItem value="completed">Completed</MenuItem>
+          </Select>
+        </FormControl>
+
         <Button variant="outlined" color="secondary" onClick={handleClearCompleted}>
           Clear Completed
         </Button>
@@ -125,7 +148,6 @@ const App: React.FC = () => {
         />
       </Paper>
 
-      {/* Snackbar for notifications */}
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: "100%" }}>
           {snackbarMessage}
