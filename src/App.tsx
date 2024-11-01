@@ -1,6 +1,6 @@
 // src/App.tsx
 import React, { useState } from "react";
-import { Container, Typography, Paper } from "@mui/material";
+import { Container, Typography, Paper, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import TaskInput from "./TaskInput";
 import TaskList from "./TaskList";
 
@@ -12,6 +12,7 @@ interface Task {
 
 const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
 
   const addTask = (taskText: string) => {
     const newTask: Task = {
@@ -34,6 +35,21 @@ const App: React.FC = () => {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
+  const handleFilterChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newFilter: "all" | "active" | "completed" | null
+  ) => {
+    if (newFilter !== null) {
+      setFilter(newFilter);
+    }
+  };
+
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "completed") return task.completed;
+    if (filter === "active") return !task.completed;
+    return true;
+  });
+
   return (
     <Container maxWidth="sm" style={{ marginTop: "2rem", textAlign: "center" }}>
       <Paper elevation={3} style={{ padding: "2rem" }}>
@@ -41,11 +57,17 @@ const App: React.FC = () => {
           Task List
         </Typography>
         <TaskInput onAddTask={addTask} />
-        <TaskList
-          tasks={tasks}
-          onToggleComplete={toggleTaskCompletion}
-          onDeleteTask={deleteTask}
-        />
+        <ToggleButtonGroup
+          value={filter}
+          exclusive
+          onChange={handleFilterChange}
+          style={{ margin: "1rem 0" }}
+        >
+          <ToggleButton value="all">All</ToggleButton>
+          <ToggleButton value="active">Active</ToggleButton>
+          <ToggleButton value="completed">Completed</ToggleButton>
+        </ToggleButtonGroup>
+        <TaskList tasks={filteredTasks} onToggleComplete={toggleTaskCompletion} onDeleteTask={deleteTask} />
       </Paper>
     </Container>
   );
