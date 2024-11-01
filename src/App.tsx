@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Paper, ToggleButton, ToggleButtonGroup, Button, Snackbar, Alert, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Container, Typography, Paper, ToggleButton, ToggleButtonGroup, Button, Snackbar, Alert, Select, MenuItem, FormControl, InputLabel, Stack } from "@mui/material";
 import TaskInput from "./TaskInput";
 import TaskList from "./TaskList";
 
@@ -113,33 +113,39 @@ const App: React.FC = () => {
           Task List
         </Typography>
         <TaskInput onAddTask={addTask} />
-        <ToggleButtonGroup
-          value={filter}
-          exclusive
-          onChange={handleFilterChange}
-          style={{ margin: "1rem 0" }}
-        >
-          <ToggleButton value="all">All</ToggleButton>
-          <ToggleButton value="active">Active</ToggleButton>
-          <ToggleButton value="completed">Completed</ToggleButton>
-        </ToggleButtonGroup>
-
-        {/* Sort By Dropdown */}
-        <FormControl variant="outlined" style={{ minWidth: 120, marginBottom: "16px" }}>
-          <InputLabel>Sort By</InputLabel>
-          <Select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as "text" | "completed")}
-            label="Sort By"
+        <Stack spacing={2} sx={{ mb: 2 }}>
+          <ToggleButtonGroup
+            value={filter}
+            exclusive
+            onChange={handleFilterChange}
+            fullWidth
+            size="small"
           >
-            <MenuItem value="text">Text</MenuItem>
-            <MenuItem value="completed">Completed</MenuItem>
-          </Select>
-        </FormControl>
-
-        <Button variant="outlined" color="secondary" onClick={handleClearCompleted}>
-          Clear Completed
-        </Button>
+            <ToggleButton value="all">All</ToggleButton>
+            <ToggleButton value="active">Active</ToggleButton>
+            <ToggleButton value="completed">Completed</ToggleButton>
+          </ToggleButtonGroup>
+          <FormControl fullWidth size="small">
+            <InputLabel>Sort By</InputLabel>
+            <Select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as "text" | "completed")}
+              label="Sort By"
+            >
+              <MenuItem value="text">Text</MenuItem>
+              <MenuItem value="completed">Completed</MenuItem>
+            </Select>
+          </FormControl>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleClearCompleted}
+            fullWidth
+            size="small"
+          >
+            Clear Completed
+          </Button>
+        </Stack>
         <TaskList
           tasks={filteredTasks}
           onToggleComplete={toggleTaskCompletion}
