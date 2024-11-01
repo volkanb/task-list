@@ -13,10 +13,8 @@ const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
 
-  // Load tasks from localStorage only once when the component mounts
   useEffect(() => {
     const savedTasks = localStorage.getItem("tasks");
-    console.log(savedTasks);
     if (savedTasks) {
       try {
         const parsedTasks = JSON.parse(savedTasks);
@@ -29,7 +27,6 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // Save tasks to localStorage whenever `tasks` changes
   useEffect(() => {
     if (tasks.length > 0) {
       localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -55,6 +52,14 @@ const App: React.FC = () => {
 
   const deleteTask = (id: number) => {
     setTasks(tasks.filter((task) => task.id !== id));
+  };
+
+  const handleEditTask = (id: number, newText: string) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, text: newText } : task
+      )
+    );
   };
 
   const handleFilterChange = (
@@ -89,7 +94,12 @@ const App: React.FC = () => {
           <ToggleButton value="active">Active</ToggleButton>
           <ToggleButton value="completed">Completed</ToggleButton>
         </ToggleButtonGroup>
-        <TaskList tasks={filteredTasks} onToggleComplete={toggleTaskCompletion} onDeleteTask={deleteTask} />
+        <TaskList
+          tasks={filteredTasks}
+          onToggleComplete={toggleTaskCompletion}
+          onDeleteTask={deleteTask}
+          onEditTask={handleEditTask}
+        />
       </Paper>
     </Container>
   );
