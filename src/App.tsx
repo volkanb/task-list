@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Paper, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Button, Container, Typography, Paper, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import TaskInput from "./TaskInput";
 import TaskList from "./TaskList";
 
@@ -62,6 +62,10 @@ const App: React.FC = () => {
     );
   };
 
+  const handleClearCompleted = () => {
+    setTasks(tasks.filter((task) => !task.completed));
+  };
+
   const handleFilterChange = (
     event: React.MouseEvent<HTMLElement>,
     newFilter: "all" | "active" | "completed" | null
@@ -94,6 +98,9 @@ const App: React.FC = () => {
           <ToggleButton value="active">Active</ToggleButton>
           <ToggleButton value="completed">Completed</ToggleButton>
         </ToggleButtonGroup>
+        <Button variant="outlined" color="secondary" onClick={handleClearCompleted}>
+          Clear Completed
+        </Button>
         <TaskList
           tasks={filteredTasks}
           onToggleComplete={toggleTaskCompletion}
