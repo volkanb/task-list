@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Container, Typography } from "@mui/material";
 import TaskInput from "./TaskInput";
+import TaskList from "./TaskList";
 
 interface Task {
   id: number;
@@ -21,13 +22,25 @@ const App: React.FC = () => {
     setTasks([...tasks, newTask]);
   };
 
+  const toggleTaskCompletion = (id: number) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  const deleteTask = (id: number) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
   return (
     <Container maxWidth="sm" style={{ marginTop: "2rem", textAlign: "center" }}>
       <Typography variant="h4" gutterBottom>
         Task List
       </Typography>
       <TaskInput onAddTask={addTask} />
-      {/* Task list component will go here */}
+      <TaskList tasks={tasks} onToggleComplete={toggleTaskCompletion} onDeleteTask={deleteTask} />
     </Container>
   );
 };
