@@ -1,5 +1,7 @@
 # Task Management App
 
+![task-list Screenshot](screenshot.png)
+
 A simple and intuitive task management application built with React, TypeScript, and Material-UI. This app allows users to create, manage, and organize their tasks efficiently.
 
 ## Features
